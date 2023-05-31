@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "philo.h"
 
 int	check_argument(char **av)
@@ -38,21 +39,23 @@ int	check_argument(char **av)
 	}
 	return (0);
 }
-
+void	ft_helper(t_philo *var)
+{
+	var->last_sleep = time_now();
+	while (time_now() - var->last_sleep < var->time_to_sleep)
+		usleep(100);
+	print_msg("is thinking", var, 0);
+}
 void *func_routine(void *philo)
 {
     t_philo *var;
-    int right_fork;
 
     var = (t_philo *)philo;
-    right_fork = var->index + 1;
-    if (right_fork == var->nbr_philo)
-        right_fork = 0;
     while (1)
     {
         pthread_mutex_lock(&var->mutex[var->index]);
         print_msg("has taken a fork", var, 0);
-        pthread_mutex_lock(&var->mutex[right_fork]);
+        pthread_mutex_lock(&var->mutex[(var->index + 1) % var->nbr_philo]);
         print_msg("has taken a fork", var, 0);
         print_msg("is_eating", var, 0);
         pthread_mutex_lock(&var[0].print->luck);
@@ -61,49 +64,53 @@ void *func_routine(void *philo)
 			var->nbr_eat--;
 		pthread_mutex_unlock(&var[0].print->luck);
 		while (time_now() - var->last_meal < var->time_to_eat)
-			func_usleep(100);
+			usleep(100);
 		pthread_mutex_unlock(&var->mutex[var->index]);
-		pthread_mutex_unlock(&var->mutex[right_fork]);
+		pthread_mutex_unlock(&var->mutex[(var->index + 1) % var->nbr_philo]);
 		if (var->nbr_eat == 0)
 			return (NULL);
 		print_msg("is sleeping", var, 0);
-		var->last_sleep = time_now();
-	while (time_now() - var->last_sleep < var->time_to_sleep)
-		func_usleep(100);
-	print_msg("is thinking", var, 0);
+		ft_helper(var);
     }
     return (NULL);
 }
+void helper_philo(t_philo *var, pthread_t *th)
+{
+	int i;
 
+	i = 1;
+	 while (i < var->nbr_philo)
+    {
+       var[i].time_creat = var[0].time_creat;
+	   var[i].last_meal = var[0].time_creat;
+        if (pthread_create(&th[i], NULL, func_routine, &var[i]))
+        {
+            printf("Error\n");
+            return ;
+        }
+        usleep(100);
+        i += 2;
+    }
+}
 void creat_philo(t_philo *var, pthread_t *th)
 {
     int i;
-    int philo_id[var->nbr_philo];
 
     i = 0;
+	var[i].time_creat = time_now();
     while (i < var->nbr_philo)
     {
-        philo_id[i] = i;
-        if (pthread_create(&th[i], NULL, func_routine, &philo_id[i]))
+		var[i].time_creat = var[0].time_creat;
+		var[i].last_meal = var[0].time_creat;
+        if (pthread_create(&th[i], NULL, func_routine, &var[i]))
         {
             printf("Error\n");
             return ;
         }
-        func_usleep(50);
+        usleep(100);
         i += 2;
     }
-    i = 1;
-    while (i < var->nbr_philo)
-    {
-        philo_id[i] = i;
-        if (pthread_create(&th[i], NULL, func_routine, &philo_id[i]))
-        {
-            printf("Error\n");
-            return ;
-        }
-        func_usleep(50);
-        i += 2;
-    }
+	helper_philo(var, th);
     i = 0;
     while (i < var->nbr_philo)
 	{
@@ -151,6 +158,18 @@ int	check_die(t_philo *var)
 			}
 			pthread_mutex_unlock(&var[0].print->luck);
 		}
+	}
+	return (0);
+}
+				return (0);
+			if (time_now() - var[i].last_meal >= var[i].time_to_die)
+			{
+				print_msg("", var, 1);
+				return (0);
+			}
+			pthread_mutex_unlock(&var[0].print->luck);
+		}
+		func_usleep(1000);
 	}
 	return (0);
 }
