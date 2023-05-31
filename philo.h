@@ -43,7 +43,6 @@ typedef struct s_philo{
 }   t_philo;
 
 long int time_now(void);
-int func_usleep(long int time);
 int	check_argument(char **av);
 void creat_philo(t_philo *var, pthread_t *th);
 void	print_msg(char *str, t_philo *var, int i);
