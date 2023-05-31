@@ -74,7 +74,7 @@ int	main(int ac, char **av)
 	}
 	if (check_argument(av))
 		return (0);
-	if (ft_atoi(av[1]) == 0 || ft_atoi(av[5]) == 0)
+	if (ft_atoi(av[1]) == 0 )
 		return (0);
 	th = malloc(ft_atoi(av[1]) * sizeof(pthread_t));
 	var = malloc(ft_atoi(av[1]) * sizeof(t_philo));
