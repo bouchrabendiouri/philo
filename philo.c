@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "philo.h"
 
 int	check_argument(char **av)
@@ -161,16 +160,3 @@ int	check_die(t_philo *var)
 	}
 	return (0);
 }
-				return (0);
-			if (time_now() - var[i].last_meal >= var[i].time_to_die)
-			{
-				print_msg("", var, 1);
-				return (0);
-			}
-			pthread_mutex_unlock(&var[0].print->luck);
-		}
-		func_usleep(1000);
-	}
-	return (0);
-}
-
