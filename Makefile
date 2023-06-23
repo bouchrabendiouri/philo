@@ -4,7 +4,7 @@ SRC = main.c philo.c time.c
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror  -fsanitize=address
 
 CC = cc
 
@@ -20,3 +20,4 @@ fclean : clean
 	rm -f $(NAME)
 
 re : fclean all
+
