@@ -40,20 +40,19 @@ void	initialize(t_philo *var, char **av, int ac,	t_print *print)
 	pthread_mutex_t	*forks;
 	long int		time_of_creat;
 	int				i;
-
 	i = 0;
 	time_of_creat = time_now();
 	forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
 	while (i < ft_atoi(av[1]))
 	{
-		var[i].time_of_day = time_now();
-		var[i].time_to_die = ft_atoi(av[2]);
-		var[i].time_to_eat = ft_atoi(av[3]);
-		var[i].time_to_sleep = ft_atoi(av[4]);
-		var[i].index = i;
-		var[i].nbr_eat = ft_atoi(av[5]);
-		var[i].nbr_philo = ft_atoi(av[1]);
-		var[i].ac = ac;
+		var->data[i].time_of_day = time_now();
+		var->data[i].time_to_die = ft_atoi(av[2]);
+		var->data[i].time_to_eat = ft_atoi(av[3]);
+		var->data[i].time_to_sleep = ft_atoi(av[4]);
+		var->data[i].index = i;
+		var->data[i].nbr_eat = ft_atoi(av[5]);
+		var->data[i].nbr_philo = ft_atoi(av[1]);
+		var->data[i].ac = ac;
 		var[i].mutex = forks;
 		var[i].print = print;
 		i++;
@@ -84,7 +83,7 @@ int	main(int ac, char **av)
 	initialize(var, av, ac, print);
 	i = -1;
 	while (++i < ft_atoi(av[1]))
-		pthread_mutex_init(&(var + i)->mutex[i], NULL);
+		pthread_mutex_init(&(var + 1)->mutex[i], NULL);
 	creat_philo(var, th);
 	check_die(var);
 }
